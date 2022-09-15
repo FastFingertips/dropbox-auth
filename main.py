@@ -38,8 +38,8 @@ class dropboxApp:
 
     def print_space_usage(self):
         space = self.dbx.users_get_space_usage()
-        print(f"{'Used':15} : ", space.used)
-        print(f"{'Allocation':15} : ", space.allocation)
+        print(f"{'Used':15} : ", space.used/1024/1024/1024, 'GB')
+        print(f"{'Allocation':15} : ", space.allocation/1024/1024/1024, 'GB')
         
     def checkFileOrFolder(self, path):
         if isinstance(path, dropbox.files.FolderMetadata): return 'Folder'
@@ -89,17 +89,15 @@ class dropboxApp:
         return file
 
 def itemsPrinter(items):
-    for no, item in enumerate(items):
-        print(no, item)
+    for no, item in enumerate(items): print(no, item)
 
-def dropboxWeb(path):
+def dropboxWeb(path): # index and item printer
     wb.open(f'https://www.dropbox.com/home{quote(path)}')
 
 def main():
     x = dropboxApp(DROPBOX_TOKEN)
     x.print_full_account()
-    # x.print_space_usage()
-    # x.getDirs() # '/test
+    x.print_space_usage()
     methods = ["[DROPBOX]", "[SEARCH]"]
     option = pick.pick(methods, "Select an option")[0] # 0: option, 1: index
     if option == methods[0]:
