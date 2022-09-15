@@ -24,22 +24,30 @@ class dropboxApp:
 
     def print_full_account(self):
         account = self.dbx.users_get_current_account()
-        print(f"{'Account ID':15} : ", account.account_id)
-        print(f"{'Name':15} : ", account.name.display_name)
-        print(f"{'Email':15} : ", account.email)
-        print(f"{'Account Type':15} : ", account.account_type)
-        print(f"{'Locale':15} : ", account.locale)
-        print(f"{'Referral Link':15} : ", account.referral_link)
-        print(f"{'Is Paired':15} : ", account.is_paired)
-        print(f"{'Team':15} : ", account.team)
-        print(f"{'Team Member ID':15} : ", account.team_member_id)
-        print(f"{'Profile Photo URL':15.15} : ", account.profile_photo_url)
-        print(f"{'Disabled':15} : ", account.disabled)
+        accountInfos = {
+            'account_id': account.account_id,
+            'name': account.name.display_name,
+            'email': account.email,
+            'account_type': account.account_type,
+            'locale': account.locale,
+            'referral_link': account.referral_link,
+            'is_paired': account.is_paired,
+            'team': account.team,
+            'team_member_id': account.team_member_id,
+            'profile_photo_url': account.profile_photo_url,
+            'disabled': account.disabled}
 
-    def print_space_usage(self):
+        maxLen = max([len(i) for i in accountInfos.keys()])
+        for desc, value in accountInfos.items():
+             print(f'{desc.replace("_", " ").capitalize():{maxLen}.{maxLen}}: {value}')
+
+
+    def print_space_usage(self): 
         space = self.dbx.users_get_space_usage()
-        print(f"{'Used':15} : ", space.used/1024/1024/1024, 'GB')
-        print(f"{'Allocation':15} : ", space.allocation/1024/1024/1024, 'GB')
+        used = space.used/1024/1024/1024
+        total = space.allocation.get_individual().allocated/1024/1024/1024
+        available = total - used
+        print(f"Using {used:.2f} GB of {total:.2f} GB ({available:.2f} GB available)")
         
     def checkFileOrFolder(self, path):
         if isinstance(path, dropbox.files.FolderMetadata): return 'Folder'
